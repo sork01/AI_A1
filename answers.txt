@@ -1,0 +1,66 @@
+Question 1
+
+This problem can be formulated in matrix form. Please specify the initial probabil-
+ity vector π, the transition probability matrix A and the observation probability matrix B.
+
+Answer
+
+A = 0,5 0,5
+    0,5 0,5
+
+B = 0,9 0,1
+    0,5 0,5
+    
+pi = 0,5 0,5
+
+================================
+
+// question 2: what is the result of pi * A?
+//
+// pi * A gives an 1 x N vector representing the probability distribution P(X_1 | λ). the element
+// (pi*A)[i] gives the probability P(X_1 = x_i | λ) which is the probability that we started in
+// any state X_0 and then transitioned (in one step) to the state x_i
+
+================================
+
+// question 3: what is the result of (pi * A) * B?
+//
+// (pi * A) * B gives an 1 x N vector representing the probability distribution P(O_1 | λ).
+// the element ((pi*A)*B)[i] gives the probability P(O_1 = o_i | X_1, λ) which is the probability
+// of starting in any state X_0, transitioning (in one step) to X_1 and observing the emission
+// o_i
+
+================================
+
+// question 4: why can we substitute O[1:t] = o[1:t] with O_t = o_t when conditioning on
+// X_t = x_i?
+//
+// this is probably because of "the markov property", i.e "given the present, the future
+// is independent of the past."
+
+================================
+
+// question 5: how many values are stored in delta and delta_idx?
+//
+// in terms of memory, in our code these both store N x T values where N is the number of
+// states and T is the length of the sequence of observations. however, delta_idx does not
+// actually store any predecessors in its first column, so it would be fair to say that
+// delta_idx stores N x (T-1) values. maybe we should adapt the code to this fact.
+// delta (non-idx) stores a value in each and every cell and so is truly N x T.
+
+================================
+
+// question 6: why do we need the division here?
+//
+// the denominator is the sum of the final column of the alpha matrix
+// this is the same sum as is returned by getOSP, i.e the total probability
+// for a given sequence of observations independent of what states and what order
+// of states generated the sequence.
+//
+// in a probability-theoretic sense, dividing by this number suggests that we are
+// constraining ourselves to a world in which the sequence of observations has
+// taken place. this can be seen symbolically in equation 2.31 where we are
+// looking at the conditional probability given that the sequence of observations
+// is fixed (O_[1:T] = o_[1:T]), which corresponds to figuring out a probability
+// in the sample space constrained to the world where O_[1:T] = o_[1:T] holds,
+// which is precisely what is accomplished by the division. i think.
